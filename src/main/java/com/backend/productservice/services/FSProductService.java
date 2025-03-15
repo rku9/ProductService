@@ -4,8 +4,10 @@ import com.backend.productservice.dtos.FSProductDto;
 import com.backend.productservice.exceptions.NoProductException;
 import com.backend.productservice.models.Category;
 import com.backend.productservice.models.Product;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -17,12 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 @Service("FSProductService")
 public class FSProductService implements ProductService{
+    @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
-
-    public FSProductService(RestTemplate restTemplate){
-        this.restTemplate = restTemplate;
-    }
+//    public FSProductService(RestTemplate restTemplate){
+//        this.restTemplate = restTemplate;
+//    }
     @Override
     public Page<Product> getAllProducts(int pageNumber, int pageSize) {
         FSProductDto[] allDtoProducts = restTemplate.getForObject("https://fakestoreapi.com/products/",
@@ -41,18 +45,36 @@ public class FSProductService implements ProductService{
 
     public Product getSingleProduct(long id) throws NoProductException {
 
-        //here we need to call the fake store to fetch the product -> we need to make http request.
-        //the following will create one-to-one mapping.
-        FSProductDto fsProductDto = restTemplate.getForObject("https://fakestoreapi.com/products/"+id,
-                FSProductDto.class);
+        /*
+        if we have redis then we should check for the object here first and if it's not there then
+        fetch it from the fake store.
+         */
+        //typecasting to get the product and not an object.
+        Product p = (Product) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCT_"+id);
 
-        //! logic to convert the dto to the product.
 
-        //EXCEPTION IF THE PRODUCT IS NULL. This will be thrown to the controller. Or we can put this in the try-catch block here.
-        if(fsProductDto==null){
-            throw new NoProductException("Enter a valid product id!", id);
+        if(p==null){
+            //cache miss. fetch from the fake store.
+            //here we need to call the fake store to fetch the product -> we need to make http request.
+            //the following will create one-to-one mapping.
+            FSProductDto fsProductDto = restTemplate.getForObject("https://fakestoreapi.com/products/"+id,
+                    FSProductDto.class);
+
+            //! logic to convert the dto to the product.
+
+            //EXCEPTION IF THE PRODUCT IS NULL. This will be thrown to the controller. Or we can put this in the try-catch block here.
+            if(fsProductDto==null){
+                throw new NoProductException("Enter a valid product id!", id);
+            }
+            p = convertFSDtoProduct(fsProductDto);
+            //store this in the cache before returning.
+            redisTemplate.opsForHash().put("PRODUCTS", "PRODUCT_"+id, p);
+
+
+            return p;
+        } else {
+            return p;
         }
-        return convertFSDtoProduct(fsProductDto);
     }
 
     private Product convertFSDtoProduct(FSProductDto fsProductDto){

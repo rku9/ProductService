@@ -12,7 +12,7 @@ import java.util.*;
 @Getter
 @Setter
 @MappedSuperclass
-public class BaseModel {
+public class BaseModel implements Serializable{
     @Id //primary key
     @GeneratedValue(strategy =  GenerationType.IDENTITY) //auto increment
     private long id;

@@ -28,7 +28,7 @@ public class ProductController {
 
     //autowired can also be used here.
     //if the following is commented out, then we will get null, and then we will have to handle the null pointer exception.
-    public ProductController(@Qualifier("DBProductService") ProductService productService){
+    public ProductController(@Qualifier("FSProductService") ProductService productService){
         this.productService = productService;
     }
     @GetMapping("/{id}")
