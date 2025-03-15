@@ -180,3 +180,5 @@ but a promise of data, which is fulfilled only when the context is still active.
 * We can use those subqueries to handle that problem. We don't need to iterate through the list of categories.
 * We can just use where c.id in [ORIGINAL QUERY].
 * **In hibernate, we should always keep check on how it's implementing those queries.**
+
+

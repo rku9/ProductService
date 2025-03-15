@@ -5,11 +5,11 @@ import com.backend.productservice.models.Category;
 import com.backend.productservice.models.Product;
 import com.backend.productservice.repositories.CategoryRepository;
 import com.backend.productservice.repositories.ProductRepository;
-import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -37,8 +37,14 @@ public class DBProductService implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+//    public List<Product> getAllProducts() {
+//        return productRepository.findAll();
+//    }
+    //we will receive the page number and the page size from the controller.
+    public Page<Product> getAllProducts(int pageNumber, int pageSize){
+        Sort sort = Sort.by("price").ascending().and(Sort.by("name").descending());
+        Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNumber, pageSize, sort));
+        return productPage;
     }
 
 

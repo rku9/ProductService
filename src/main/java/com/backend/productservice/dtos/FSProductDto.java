@@ -8,6 +8,7 @@ import java.util.*;
 
 @Getter
 @Setter
+//this mirrors the data type and the attributes of the API.
 public class FSProductDto {
     private long id;
     private String title;

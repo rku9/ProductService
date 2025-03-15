@@ -36,3 +36,6 @@ build/
 /src/main/java/com/backend/productservice/ProductService.md
 /src/main/java/com/backend/productservice/SpringJPA.md
 /src/main/java/com/backend/productservice/SpringJPA2.md
+/src/main/java/com/backend/productservice/deployment.md
+/src/main/java/com/backend/productservice/payment.md
+/src/main/java/com/backend/productservice/vpcSecGroup.md

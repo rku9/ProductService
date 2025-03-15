@@ -4,6 +4,8 @@ import com.backend.productservice.dtos.FSProductDto;
 import com.backend.productservice.exceptions.NoProductException;
 import com.backend.productservice.models.Category;
 import com.backend.productservice.models.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -22,7 +24,7 @@ public class FSProductService implements ProductService{
         this.restTemplate = restTemplate;
     }
     @Override
-    public List<Product> getAllProducts() {
+    public Page<Product> getAllProducts(int pageNumber, int pageSize) {
         FSProductDto[] allDtoProducts = restTemplate.getForObject("https://fakestoreapi.com/products/",
                 FSProductDto[].class);
 
@@ -30,7 +32,8 @@ public class FSProductService implements ProductService{
         for(FSProductDto i: allDtoProducts){
             allProducts.add(convertFSDtoProduct(i));
         }
-        return allProducts;
+//        return allProducts;
+        return new PageImpl<>(allProducts);
 //        throw new NullPointerException();
     }
 
