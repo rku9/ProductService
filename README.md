@@ -1,1 +1,1 @@
-A ProductService class or managing the retrieval and the update of the product making use of both the Database on the localHost & the AWS(RDS) and the Fake Store API.
+A ProductService class for managing the retrieval and the update of the product making use of both the Database on the localHost & the AWS(RDS) and the Fake Store API. This follows the MVC design pattern where the Client is talking to the controller which sends the request to the service. The service talks to the database using the repository class.
