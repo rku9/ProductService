@@ -2,20 +2,14 @@ package com.backend.productservice.controllers;
 
 import com.backend.productservice.exceptions.NoProductException;
 import com.backend.productservice.models.Product;
-import com.backend.productservice.services.FSProductService;
 import com.backend.productservice.services.ProductService;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.*;
-import java.util.*;
 
 @Getter
 @Setter
@@ -32,7 +26,7 @@ public class ProductController {
         this.productService = productService;
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") long id) throws NoProductException {
+    public ResponseEntity<Product> getSingleProduct(@PathVariable("id") long id) throws NoProductException {
 
 
 //        ResponseEntity<Product> responseEntity;
