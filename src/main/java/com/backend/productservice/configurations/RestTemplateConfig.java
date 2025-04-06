@@ -1,5 +1,6 @@
 package com.backend.productservice.configurations;
 
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -12,6 +13,8 @@ import java.util.*;
 @Configuration
 public class RestTemplateConfig {
     @Bean
+    @LoadBalanced
+    //for when a list of URLs are passed using the eureka server.
     public RestTemplate getRestTemplate(){
         return new RestTemplate();
     }

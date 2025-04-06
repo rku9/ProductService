@@ -29,6 +29,11 @@ public class FSProductService implements ProductService{
 //    }
     @Override
     public Page<Product> getAllProducts(int pageNumber, int pageSize) {
+
+//        //!making a http call to the user service.
+//        restTemplate.getForObject("http://localhost:7070/users/sample", Void.class);
+
+
         FSProductDto[] allDtoProducts = restTemplate.getForObject("https://fakestoreapi.com/products/",
                 FSProductDto[].class);
 
@@ -45,15 +50,23 @@ public class FSProductService implements ProductService{
 
     public Product getSingleProduct(long id) throws NoProductException {
 
+
+        //!making a http call to the user service.
+//        restTemplate.getForObject("http://localhost:7070/users/sample", Void.class);
+        //! the above is not recommended as the url is hard coded.
+
+        //! we should make use of the eureka server.
+        //use loadBalanced in the rest template class.
+        restTemplate.getForObject("http://userservice/users/sample", Void.class);
         /*
         if we have redis then we should check for the object here first and if it's not there then
         fetch it from the fake store.
          */
         //typecasting to get the product and not an object.
-        Product p = (Product) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCT_"+id);
+//        Product p = (Product) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCT_"+id);
 
 
-        if(p==null){
+//        if(p==null){
             //cache miss. fetch from the fake store.
             //here we need to call the fake store to fetch the product -> we need to make http request.
             //the following will create one-to-one mapping.
@@ -66,15 +79,15 @@ public class FSProductService implements ProductService{
             if(fsProductDto==null){
                 throw new NoProductException("Enter a valid product id!", id);
             }
-            p = convertFSDtoProduct(fsProductDto);
+            Product p = convertFSDtoProduct(fsProductDto);
             //store this in the cache before returning.
-            redisTemplate.opsForHash().put("PRODUCTS", "PRODUCT_"+id, p);
+//            redisTemplate.opsForHash().put("PRODUCTS", "PRODUCT_"+id, p);
 
 
             return p;
-        } else {
-            return p;
-        }
+//        } else {
+//            return p;
+//        }
     }
 
     private Product convertFSDtoProduct(FSProductDto fsProductDto){

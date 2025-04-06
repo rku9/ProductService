@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -16,6 +17,10 @@ import java.util.Optional;
 @Service("DBProductService")
 //@Primary
 public class DBProductService implements ProductService {
+
+    //rest template for the user service api call.
+    private RestTemplate restTemplate;
+
     //repo for this service
     private final ProductRepository productRepository;
     private CategoryRepository categoryRepository;
@@ -27,6 +32,9 @@ public class DBProductService implements ProductService {
     //! READ
     @Override
     public Product getSingleProduct(long id) throws NoProductException {
+
+
+
         //make a call to the db to get the product with that id.
         //but service should talk to db through repository.
         Optional<Product> optionalProduct = productRepository.findById(id);
@@ -95,4 +103,7 @@ public class DBProductService implements ProductService {
         }
         return productRepository.save(product);
     }
+
+
+
 }
